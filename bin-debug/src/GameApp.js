@@ -91,13 +91,14 @@ var GameApp = (function (_super) {
         sky.height = stageH;
 
         // Logo
-        var logo = this.createBitmapByName("logo");
-        this.addChild(logo);
-        logo.scaleX = 0.5;
-        logo.scaleY = 0.5;
-        logo.anchorX = 0.5;
-        logo.x = stageW / 2;
-        logo.y = 15;
+        var appLogo = this.createBitmapByName("logo");
+        this.addChild(appLogo);
+        appLogo.scaleX = 0.5;
+        appLogo.scaleY = 0.5;
+        appLogo.anchorX = 0.5;
+        appLogo.x = stageW / 2;
+        appLogo.y = 15;
+        this.appLogo = appLogo;
 
         // 底部青蛙
         var frog = this.createBitmapByName("frogImg");
@@ -107,10 +108,32 @@ var GameApp = (function (_super) {
         frog.y = stageH;
 
         // 开始按钮
-        var start = new egret.Button();
-        start.label = "startBtn";
-        start.skin = RES.getRes("startBtn");
-        this.addChild(start);
+        var startBtn = this.createBitmapByName("startBtn");
+        this.addChild(startBtn);
+        startBtn.anchorX = startBtn.anchorY = 0.5;
+        startBtn.scaleX = startBtn.scaleY = 0.5;
+        startBtn.x = stageW / 2;
+        startBtn.y = stageH / 2;
+        startBtn.touchEnabled = true;
+        startBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startBtnOnTouch, this);
+        this.startBtn = startBtn;
+
+        // 计时器
+        var timerContainer = new egret.Sprite();
+        var timer = this.createBitmapByName("timerImg");
+        timerContainer.addChild(timer);
+        timer.scaleX = timer.scaleY = 0.5;
+        var timerLbl = new egret.TextField();
+        timerLbl.text = "20,00";
+        timerLbl.size = 14;
+        timerLbl.x = timer.width / 2 + 4;
+        timerLbl.y = 8;
+        timerContainer.addChild(timerLbl);
+        timerContainer.height = timer.height / 2;
+        this.addChild(timerContainer);
+        timerContainer.x = timerContainer.y = 6;
+        timerContainer.width = stageW / 2;
+        this.timerContainer = timerContainer;
 
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -151,6 +174,16 @@ var GameApp = (function (_super) {
 
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         RES.getResAsync("description", this.startAnimation, this);
+    };
+    GameApp.prototype.startBtnOnTouch = function () {
+        this.HideStartView();
+    };
+
+    GameApp.prototype.HideStartView = function () {
+        var startbtnTw = egret.Tween.get(this.startBtn);
+        var logoTw = egret.Tween.get(this.appLogo);
+        logoTw.to({ "y": -this.appLogo.height }, 200);
+        startbtnTw.to({ "alpha": 0 }, 200);
     };
 
     /**

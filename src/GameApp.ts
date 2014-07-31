@@ -76,6 +76,9 @@ class GameApp extends egret.DisplayObjectContainer{
     }
 
     private textContainer:egret.Sprite;
+    private startBtn:egret.Bitmap;
+    private appLogo:egret.Bitmap;
+    private timerContainer:egret.Sprite;
     /**
      * 创建游戏场景
      */
@@ -90,13 +93,14 @@ class GameApp extends egret.DisplayObjectContainer{
         sky.height = stageH;
 
         // Logo
-        var logo:egret.Bitmap = this.createBitmapByName("logo");
-        this.addChild(logo);
-        logo.scaleX = 0.5;
-        logo.scaleY = 0.5;
-        logo.anchorX = 0.5;
-        logo.x = stageW / 2;
-        logo.y = 15;
+        var appLogo:egret.Bitmap = this.createBitmapByName("logo");
+        this.addChild(appLogo);
+        appLogo.scaleX = 0.5;
+        appLogo.scaleY = 0.5;
+        appLogo.anchorX = 0.5;
+        appLogo.x = stageW / 2;
+        appLogo.y = 15;
+        this.appLogo = appLogo;
 
         // 底部青蛙
         var frog:egret.Bitmap = this.createBitmapByName("frogImg");
@@ -106,10 +110,33 @@ class GameApp extends egret.DisplayObjectContainer{
         frog.y = stageH;
 
         // 开始按钮
-        var start:egret.Button = new egret.Button();
-        start.label = "startBtn";
-        start.skin = RES.getRes("startBtn");
-//        this.addChild(start);
+        var startBtn:egret.Bitmap = this.createBitmapByName("startBtn");
+        this.addChild(startBtn);
+        startBtn.anchorX = startBtn.anchorY = 0.5;
+        startBtn.scaleX = startBtn.scaleY = 0.5;
+        startBtn.x = stageW / 2;
+        startBtn.y = stageH / 2;
+        startBtn.touchEnabled = true;
+        startBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.startBtnOnTouch,this);
+        this.startBtn = startBtn;
+
+        // 计时器
+        var timerContainer:egret.Sprite = new egret.Sprite();
+        var timer:egret.Bitmap = this.createBitmapByName("timerImg");
+        timerContainer.addChild(timer);
+        timer.scaleX = timer.scaleY = 0.5;
+        var timerLbl:egret.TextField = new egret.TextField();
+        timerLbl.text = "20,00";
+        timerLbl.size = 14;
+        timerLbl.x = timer.width / 2 + 4;
+        timerLbl.y = 8;
+        timerContainer.addChild(timerLbl);
+        timerContainer.height = timer.height / 2;
+        this.addChild(timerContainer);
+        timerContainer.x = timerContainer.y = 6;
+        timerContainer.width = stageW / 2;
+        this.timerContainer = timerContainer;
+        timerContainer.visible = false;
 
         var topMask:egret.Shape = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -149,10 +176,22 @@ class GameApp extends egret.DisplayObjectContainer{
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         RES.getResAsync("description",this.startAnimation,this)
     }
+    private startBtnOnTouch()
+    {
+        this.HideStartView();
+    }
+
+    private HideStartView(){
+        var startbtnTw = egret.Tween.get(this.startBtn);
+        var logoTw = egret.Tween.get(this.appLogo);
+        logoTw.to({"y": -this.appLogo.height}, 200);
+        startbtnTw.to({"alpha":0}, 200);
+    }
+
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
      */
-    private createBitmapByName(name:string):egret.Bitmap {
+    public createBitmapByName(name:string):egret.Bitmap {
         var result:egret.Bitmap = new egret.Bitmap();
         var texture:egret.Texture = RES.getRes(name);
         result.texture = texture;
