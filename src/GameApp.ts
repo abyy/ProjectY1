@@ -80,14 +80,16 @@ class GameApp extends egret.DisplayObjectContainer{
      * 创建游戏场景
      */
     private createGameScene():void{
-
-        var sky:egret.Bitmap = this.createBitmapByName("bgImage");
-        this.addChild(sky);
         var stageW:number = this.stage.stageWidth;
         var stageH:number = this.stage.stageHeight;
+
+        // 背景
+        var sky:egret.Bitmap = this.createBitmapByName("bgImage");
+        this.addChild(sky);
         sky.width = stageW;
         sky.height = stageH;
 
+        // Logo
         var logo:egret.Bitmap = this.createBitmapByName("logo");
         this.addChild(logo);
         logo.scaleX = 0.5;
@@ -96,10 +98,14 @@ class GameApp extends egret.DisplayObjectContainer{
         logo.x = stageW / 2;
         logo.y = 15;
 
+        // 底部青蛙
         var frog:egret.Bitmap = this.createBitmapByName("frogImg");
         this.addChild(frog);
         frog.scaleX = frog.scaleY = 0.5;
-        
+        frog.anchorOffsetY = frog.height;
+        frog.y = stageH;
+
+        // 开始按钮
 
         var topMask:egret.Shape = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);

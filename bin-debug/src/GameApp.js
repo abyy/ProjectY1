@@ -81,20 +81,34 @@ var GameApp = (function (_super) {
     * 创建游戏场景
     */
     GameApp.prototype.createGameScene = function () {
-        var sky = this.createBitmapByName("bgImage");
-        this.addChild(sky);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
+
+        // 背景
+        var sky = this.createBitmapByName("bgImage");
+        this.addChild(sky);
         sky.width = stageW;
         sky.height = stageH;
 
+        // Logo
         var logo = this.createBitmapByName("logo");
         this.addChild(logo);
         logo.scaleX = 0.5;
         logo.scaleY = 0.5;
         logo.anchorOffsetX = logo.width / 2;
         logo.x = stageW / 2;
-        logo.y = 30;
+        logo.y = 15;
+
+        // 底部青蛙
+        var frog = this.createBitmapByName("frogImg");
+        this.addChild(frog);
+        frog.scaleX = frog.scaleY = 0.5;
+        frog.anchorOffsetY = frog.height;
+        frog.y = stageH;
+
+        // 开始按钮
+        var startBg = this.createBitmapByName("startBtn");
+        this.addChild(startBg);
 
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
