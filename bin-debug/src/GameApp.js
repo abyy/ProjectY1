@@ -95,7 +95,7 @@ var GameApp = (function (_super) {
         this.addChild(logo);
         logo.scaleX = 0.5;
         logo.scaleY = 0.5;
-        logo.anchorOffsetX = logo.width / 2;
+        logo.anchorX = 0.5;
         logo.x = stageW / 2;
         logo.y = 15;
 
@@ -107,20 +107,18 @@ var GameApp = (function (_super) {
         frog.y = stageH;
 
         // 开始按钮
-        var startBg = this.createBitmapByName("startBtn");
-        this.addChild(startBg);
-
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, stageH);
         topMask.graphics.endFill();
         topMask.width = stageW;
         topMask.height = stageH;
-        this.addChild(topMask);
 
+        //        this.addChild(topMask);
         var icon = this.createBitmapByName("egretIcon");
         icon.anchorX = icon.anchorY = 0.5;
-        this.addChild(icon);
+
+        //        this.addChild(icon);
         icon.x = stageW / 2;
         icon.y = stageH / 2 - 60;
         icon.scaleX = 0.55;
@@ -134,11 +132,12 @@ var GameApp = (function (_super) {
         colorLabel.textAlign = "center";
         colorLabel.text = "Hello Egret";
         colorLabel.size = 20;
-        this.addChild(colorLabel);
 
+        //        this.addChild(colorLabel);
         var textContainer = new egret.Sprite();
         textContainer.anchorX = textContainer.anchorY = 0.5;
-        this.addChild(textContainer);
+
+        //        this.addChild(textContainer);
         textContainer.x = stageW / 2;
         textContainer.y = stageH / 2 + 100;
         textContainer.alpha = 0;

@@ -94,7 +94,7 @@ class GameApp extends egret.DisplayObjectContainer{
         this.addChild(logo);
         logo.scaleX = 0.5;
         logo.scaleY = 0.5;
-        logo.anchorOffsetX = logo.width / 2;
+        logo.anchorX = 0.5;
         logo.x = stageW / 2;
         logo.y = 15;
 
@@ -113,11 +113,11 @@ class GameApp extends egret.DisplayObjectContainer{
         topMask.graphics.endFill();
         topMask.width = stageW;
         topMask.height = stageH;
-        this.addChild(topMask);
+//        this.addChild(topMask);
 
         var icon:egret.Bitmap = this.createBitmapByName("egretIcon");
         icon.anchorX = icon.anchorY = 0.5;
-        this.addChild(icon);
+//        this.addChild(icon);
         icon.x = stageW / 2;
         icon.y = stageH / 2 - 60;
         icon.scaleX = 0.55;
@@ -131,11 +131,11 @@ class GameApp extends egret.DisplayObjectContainer{
         colorLabel.textAlign = "center";
         colorLabel.text = "Hello Egret";
         colorLabel.size = 20;
-        this.addChild(colorLabel);
+//        this.addChild(colorLabel);
 
         var textContainer:egret.Sprite = new egret.Sprite();
         textContainer.anchorX = textContainer.anchorY = 0.5;
-        this.addChild(textContainer);
+//        this.addChild(textContainer);
         textContainer.x = stageW / 2;
         textContainer.y = stageH / 2 + 100;
         textContainer.alpha = 0;
