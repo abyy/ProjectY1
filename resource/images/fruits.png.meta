@@ -1,0 +1,153 @@
+fileFormatVersion: 2
+guid: 324c2c0a0db70a040a4139c5c06bf6e9
+TextureImporter:
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: fruits_0
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 775
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_1
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 775
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_2
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 775
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_6
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 530
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_7
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 508
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_8
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 521
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_9
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 273
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_10
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 273
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_11
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 273
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_12
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 24
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_13
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 24
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+    - name: fruits_14
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 16
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: .5, y: .5}
+  spritePackingTag: 
+  userData: 
