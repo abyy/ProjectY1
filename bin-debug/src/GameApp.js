@@ -107,6 +107,11 @@ var GameApp = (function (_super) {
         frog.y = stageH;
 
         // 开始按钮
+        var start = new egret.Button();
+        start.label = "startBtn";
+        start.skin = RES.getRes("startBtn");
+        this.addChild(start);
+
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, stageH);
