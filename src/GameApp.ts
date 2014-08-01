@@ -128,15 +128,19 @@ class GameApp extends egret.DisplayObjectContainer{
         var timerLbl:egret.TextField = new egret.TextField();
         timerLbl.text = "20,00";
         timerLbl.size = 14;
-        timerLbl.x = timer.width / 2 + 4;
+//        timerLbl.x = timer.width / 2 + 4;
         timerLbl.y = 8;
+        timerLbl.textAlign = "center";
         timerContainer.addChild(timerLbl);
         timerContainer.height = timer.height / 2;
         this.addChild(timerContainer);
-        timerContainer.x = timerContainer.y = 6;
+//        timerContainer.x =
+        timerContainer.anchorX = 0.5;
+        timerContainer.x = stageW / 2;
+        timerContainer.y = 6;
         timerContainer.width = stageW / 2;
-        this.timerContainer = timerContainer;
         timerContainer.visible = false;
+        this.timerContainer = timerContainer;
 
         var topMask:egret.Shape = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -179,6 +183,7 @@ class GameApp extends egret.DisplayObjectContainer{
     private startBtnOnTouch()
     {
         this.HideStartView();
+        this.ShowGameView();
     }
 
     private HideStartView(){
@@ -186,6 +191,14 @@ class GameApp extends egret.DisplayObjectContainer{
         var logoTw = egret.Tween.get(this.appLogo);
         logoTw.to({"y": -this.appLogo.height}, 200);
         startbtnTw.to({"alpha":0}, 200);
+        startbtnTw.wait(200);
+    }
+
+    private ShowGameView(){
+        this.timerContainer.visible = true;
+        var timerTw = egret.Tween.get(this.timerContainer);
+        this.timerContainer.y = -this.timerContainer.height;
+        timerTw.to({"y": 6}, 200);
     }
 
     /**

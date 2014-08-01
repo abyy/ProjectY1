@@ -131,8 +131,13 @@ var GameApp = (function (_super) {
         timerContainer.addChild(timerLbl);
         timerContainer.height = timer.height / 2;
         this.addChild(timerContainer);
-        timerContainer.x = timerContainer.y = 6;
+
+        //        timerContainer.x =
+        timerContainer.anchorX = 0.5;
+        timerContainer.x = stageW / 2;
+        timerContainer.y = 6;
         timerContainer.width = stageW / 2;
+        timerContainer.visible = false;
         this.timerContainer = timerContainer;
 
         var topMask = new egret.Shape();
@@ -177,6 +182,7 @@ var GameApp = (function (_super) {
     };
     GameApp.prototype.startBtnOnTouch = function () {
         this.HideStartView();
+        this.ShowGameView();
     };
 
     GameApp.prototype.HideStartView = function () {
@@ -184,6 +190,14 @@ var GameApp = (function (_super) {
         var logoTw = egret.Tween.get(this.appLogo);
         logoTw.to({ "y": -this.appLogo.height }, 200);
         startbtnTw.to({ "alpha": 0 }, 200);
+        startbtnTw.wait(200);
+    };
+
+    GameApp.prototype.ShowGameView = function () {
+        this.timerContainer.visible = true;
+        var timerTw = egret.Tween.get(this.timerContainer);
+        this.timerContainer.y = -this.timerContainer.height;
+        timerTw.to({ "y": 6 }, 200);
     };
 
     /**
