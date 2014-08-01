@@ -79,6 +79,8 @@ class GameApp extends egret.DisplayObjectContainer{
     private startBtn:egret.Bitmap;
     private appLogo:egret.Bitmap;
     private timerContainer:egret.Sprite;
+    private scoreContainer:egret.Sprite;
+    private scoreLbl:egret.TextField;
     /**
      * 创建游戏场景
      */
@@ -120,27 +122,49 @@ class GameApp extends egret.DisplayObjectContainer{
         startBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.startBtnOnTouch,this);
         this.startBtn = startBtn;
 
-        // 计时器
+        // 倒计时容器
         var timerContainer:egret.Sprite = new egret.Sprite();
-        var timer:egret.Bitmap = this.createBitmapByName("timerImg");
-        timerContainer.addChild(timer);
-        timer.scaleX = timer.scaleY = 0.5;
-        var timerLbl:egret.TextField = new egret.TextField();
-        timerLbl.text = "20,00";
-        timerLbl.size = 14;
-//        timerLbl.x = timer.width / 2 + 4;
-        timerLbl.y = 8;
-        timerLbl.textAlign = "center";
-        timerContainer.addChild(timerLbl);
-        timerContainer.height = timer.height / 2;
         this.addChild(timerContainer);
-//        timerContainer.x =
         timerContainer.anchorX = 0.5;
         timerContainer.x = stageW / 2;
         timerContainer.y = 6;
-        timerContainer.width = stageW / 2;
         timerContainer.visible = false;
         this.timerContainer = timerContainer;
+
+        // 倒计时icon
+        var timerIcon:egret.Bitmap = this.createBitmapByName("timerImg");
+        timerContainer.addChild(timerIcon);
+        timerIcon.scaleX = timerIcon.scaleY = 0.5;
+        timerIcon.x = -6;
+
+        // 倒计时label
+        var timerLbl:egret.TextField = new egret.TextField();
+        timerContainer.addChild(timerLbl);
+        timerLbl.text = "20,00";
+        timerLbl.size = 14;
+        timerLbl.x = timerIcon.width / 2 + timerIcon.x + 4;
+        timerLbl.y = 8;
+
+        // 得分容器
+        var scoreContainer:egret.Sprite = new egret.Sprite();
+        this.addChild(scoreContainer);
+        scoreContainer.x = 8;
+        scoreContainer.y = 14;
+        scoreContainer.visible = false;
+        this.scoreContainer = scoreContainer;
+
+        // 得分标题
+        var scoreHeadline:egret.TextField = new egret.TextField();
+        scoreContainer.addChild(scoreHeadline);
+        scoreHeadline.text = "得分";
+        scoreHeadline.size = 14;
+
+        // 得分label
+        var scoreLbl:egret.TextField = new egret.TextField();
+        scoreContainer.addChild(scoreLbl);
+        scoreLbl.size = 14;
+        scoreLbl.x = scoreHeadline.width + 4;
+        this.scoreLbl = scoreLbl;
 
         var topMask:egret.Shape = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -180,6 +204,7 @@ class GameApp extends egret.DisplayObjectContainer{
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         RES.getResAsync("description",this.startAnimation,this)
     }
+
     private startBtnOnTouch()
     {
         this.HideStartView();
@@ -197,8 +222,23 @@ class GameApp extends egret.DisplayObjectContainer{
     private ShowGameView(){
         this.timerContainer.visible = true;
         var timerTw = egret.Tween.get(this.timerContainer);
+        var timerDefaultY:number = this.timerContainer.y;
         this.timerContainer.y = -this.timerContainer.height;
-        timerTw.to({"y": 6}, 200);
+        timerTw.to({"y": timerDefaultY}, 200);
+
+        this.scoreContainer.visible = true;
+        var scoreTw = egret.Tween.get(this.scoreContainer);
+        var scoreDefaultX:number = this.scoreContainer.x;
+        this.scoreContainer.x = -this.scoreContainer.width;
+        scoreTw.to({"x": scoreDefaultX}, 200);
+
+        this.GameInit();
+    }
+
+    private score:number;
+    private GameInit(){
+        this.score = 0;
+        this.scoreLbl.text = this.score.toString();
     }
 
     /**

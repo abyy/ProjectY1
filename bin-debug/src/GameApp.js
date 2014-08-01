@@ -118,27 +118,49 @@ var GameApp = (function (_super) {
         startBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.startBtnOnTouch, this);
         this.startBtn = startBtn;
 
-        // 计时器
+        // 倒计时容器
         var timerContainer = new egret.Sprite();
-        var timer = this.createBitmapByName("timerImg");
-        timerContainer.addChild(timer);
-        timer.scaleX = timer.scaleY = 0.5;
-        var timerLbl = new egret.TextField();
-        timerLbl.text = "20,00";
-        timerLbl.size = 14;
-        timerLbl.x = timer.width / 2 + 4;
-        timerLbl.y = 8;
-        timerContainer.addChild(timerLbl);
-        timerContainer.height = timer.height / 2;
         this.addChild(timerContainer);
-
-        //        timerContainer.x =
         timerContainer.anchorX = 0.5;
         timerContainer.x = stageW / 2;
         timerContainer.y = 6;
-        timerContainer.width = stageW / 2;
         timerContainer.visible = false;
         this.timerContainer = timerContainer;
+
+        // 倒计时icon
+        var timerIcon = this.createBitmapByName("timerImg");
+        timerContainer.addChild(timerIcon);
+        timerIcon.scaleX = timerIcon.scaleY = 0.5;
+        timerIcon.x = -6;
+
+        // 倒计时label
+        var timerLbl = new egret.TextField();
+        timerContainer.addChild(timerLbl);
+        timerLbl.text = "20,00";
+        timerLbl.size = 14;
+        timerLbl.x = timerIcon.width / 2 + timerIcon.x + 4;
+        timerLbl.y = 8;
+
+        // 得分容器
+        var scoreContainer = new egret.Sprite();
+        this.addChild(scoreContainer);
+        scoreContainer.x = 8;
+        scoreContainer.y = 14;
+        scoreContainer.visible = false;
+        this.scoreContainer = scoreContainer;
+
+        // 得分标题
+        var scoreHeadline = new egret.TextField();
+        scoreContainer.addChild(scoreHeadline);
+        scoreHeadline.text = "得分";
+        scoreHeadline.size = 14;
+
+        // 得分label
+        var scoreLbl = new egret.TextField();
+        scoreContainer.addChild(scoreLbl);
+        scoreLbl.size = 14;
+        scoreLbl.x = scoreHeadline.width + 4;
+        this.scoreLbl = scoreLbl;
 
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -180,6 +202,7 @@ var GameApp = (function (_super) {
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         RES.getResAsync("description", this.startAnimation, this);
     };
+
     GameApp.prototype.startBtnOnTouch = function () {
         this.HideStartView();
         this.ShowGameView();
@@ -196,8 +219,22 @@ var GameApp = (function (_super) {
     GameApp.prototype.ShowGameView = function () {
         this.timerContainer.visible = true;
         var timerTw = egret.Tween.get(this.timerContainer);
+        var timerDefaultY = this.timerContainer.y;
         this.timerContainer.y = -this.timerContainer.height;
-        timerTw.to({ "y": 6 }, 200);
+        timerTw.to({ "y": timerDefaultY }, 200);
+
+        this.scoreContainer.visible = true;
+        var scoreTw = egret.Tween.get(this.scoreContainer);
+        var scoreDefaultX = this.scoreContainer.x;
+        this.scoreContainer.x = -this.scoreContainer.width;
+        scoreTw.to({ "x": scoreDefaultX }, 200);
+
+        this.GameInit();
+    };
+
+    GameApp.prototype.GameInit = function () {
+        this.score = 0;
+        this.scoreLbl.text = this.score.toString();
     };
 
     /**
