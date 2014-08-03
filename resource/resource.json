@@ -6,11 +6,12 @@
         {"name":"frogImg","type":"image","url":"images/touchfast_02.png"},
         {"name":"startBtn","type":"image","url":"images/btn_start.png"},
         {"name":"timerImg","type":"image","url":"images/icon_timer.png"},
-        {"name":"description","type":"json","url":"config/description.json"}
+        {"name":"fruits","type":"sheet","url":"images/fruits.json"},
+        {"name":"fruitBg","type":"image","url":"images/bg_content.png"}
 	],
 
 "groups":
 	[
-        {"name":"preload","keys":"bgImage,logo,frogImg,startBtn,timerImg"}
+        {"name":"preload","keys":"bgImage,logo,frogImg,startBtn,fruits,timerImg,fruitBg"}
 	]
 }

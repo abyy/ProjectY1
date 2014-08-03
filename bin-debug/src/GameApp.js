@@ -34,6 +34,8 @@ var GameApp = (function (_super) {
     __extends(GameApp, _super);
     function GameApp() {
         _super.call(this);
+        this.fruits = [];
+        this.fruitContainers = [];
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
     GameApp.prototype.onAddToStage = function (event) {
@@ -162,24 +164,55 @@ var GameApp = (function (_super) {
         scoreLbl.x = scoreHeadline.width + 4;
         this.scoreLbl = scoreLbl;
 
-        var topMask = new egret.Shape();
+        // 水果初始化
+        this.fruitImgs = RES.getRes("fruits");
+        var fruits = [
+            this.createBitmapByName("fruitBg"),
+            this.createBitmapByName("fruitBg"),
+            this.createBitmapByName("fruitBg")];
+        var fruitBgs = [
+            this.createBitmapByName("fruitBg"),
+            this.createBitmapByName("fruitBg"),
+            this.createBitmapByName("fruitBg")];
+        var fruitContainers = [];
+        for (var i = 0; i < 3; i++) {
+            fruitContainers[i] = new egret.Sprite;
+            this.addChild(fruitContainers[i]);
+            fruitContainers[i].anchorX = fruitContainers[i].anchorY = 0.5;
+            fruitContainers[i].x = stageW * (1.1 + 1.5 * i) / 5;
+            fruitContainers[i].addChild(fruitBgs[i]);
+            fruitContainers[i].addChild(fruits[i]);
+            fruits[i].x = fruits[i].y = 10;
+            fruitContainers[i].visible = false;
+        }
+        fruitContainers[0].y = stageH * 0.53;
+        fruitContainers[1].y = stageH * 0.35;
+        fruitContainers[2].y = stageH * 0.57;
+        fruitBgs[0].scaleX = fruitBgs[0].scaleY = 0.5;
+        fruitBgs[1].scaleX = fruitBgs[1].scaleY = 0.42;
+        fruitBgs[2].scaleX = fruitBgs[2].scaleY = 0.45;
+        fruits[0].scaleX = fruits[0].scaleY = 0.4;
+        fruits[1].scaleX = fruits[1].scaleY = fruits[2].scaleX = fruits[2].scaleY = 0.35;
+        this.fruits = fruits;
+        this.fruitContainers = fruitContainers;
+        /*
+        var topMask:egret.Shape = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, stageH);
         topMask.graphics.endFill();
         topMask.width = stageW;
         topMask.height = stageH;
-
         //        this.addChild(topMask);
-        var icon = this.createBitmapByName("egretIcon");
+        
+        var icon:egret.Bitmap = this.createBitmapByName("egretIcon");
         icon.anchorX = icon.anchorY = 0.5;
-
         //        this.addChild(icon);
         icon.x = stageW / 2;
         icon.y = stageH / 2 - 60;
         icon.scaleX = 0.55;
         icon.scaleY = 0.55;
-
-        var colorLabel = new egret.TextField();
+        
+        var colorLabel:egret.TextField = new egret.TextField();
         colorLabel.x = stageW / 2;
         colorLabel.y = stageH / 2 + 50;
         colorLabel.anchorX = colorLabel.anchorY = 0.5;
@@ -187,23 +220,58 @@ var GameApp = (function (_super) {
         colorLabel.textAlign = "center";
         colorLabel.text = "Hello Egret";
         colorLabel.size = 20;
-
         //        this.addChild(colorLabel);
-        var textContainer = new egret.Sprite();
+        
+        var textContainer:egret.Sprite = new egret.Sprite();
         textContainer.anchorX = textContainer.anchorY = 0.5;
-
         //        this.addChild(textContainer);
         textContainer.x = stageW / 2;
         textContainer.y = stageH / 2 + 100;
         textContainer.alpha = 0;
-
+        
         this.textContainer = textContainer;
-
+        
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
-        RES.getResAsync("description", this.startAnimation, this);
+        RES.getResAsync("description",this.startAnimation,this)
+        */
+    };
+
+    GameApp.prototype.RefreshFruits = function () {
+        var dif, other, difElement;
+
+        dif = Math.random() * 12;
+        other = Math.random() * 12;
+        while (other == dif)
+            other = Math.random() * 12;
+        difElement = Math.random() * 3;
+
+        dif = Math.floor(dif);
+        other = Math.floor(other);
+        difElement = Math.floor(difElement);
+
+        for (var i = 0; i < 3; i = i + 1) {
+            if (i == difElement)
+                this.refreshFruit(this.fruits[i], dif);
+            else
+                this.refreshFruit(this.fruits[i], other);
+            this.fruitContainers[i].visible = true;
+            var fruitsTw = egret.Tween.get(this.fruitContainers[i]);
+            this.fruitContainers[i].scaleX = this.fruitContainers[i].scaleY = 0;
+            fruitsTw.to({
+                "scaleX": 1,
+                "scaleY": 1
+            }, 200, egret.Ease.quintInOut);
+        }
+    };
+
+    GameApp.prototype.refreshFruit = function (fruit, index) {
+        var fruits = this.fruitImgs;
+        var texture = fruits.getTexture("fruit" + index.toString());
+        fruit.texture = texture;
     };
 
     GameApp.prototype.startBtnOnTouch = function () {
+        //        this.startBtn.touchEnabled = false;
         this.HideStartView();
         this.ShowGameView();
     };
@@ -235,6 +303,8 @@ var GameApp = (function (_super) {
     GameApp.prototype.GameInit = function () {
         this.score = 0;
         this.scoreLbl.text = this.score.toString();
+
+        this.RefreshFruits();
     };
 
     /**

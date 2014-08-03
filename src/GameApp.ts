@@ -81,6 +81,10 @@ class GameApp extends egret.DisplayObjectContainer{
     private timerContainer:egret.Sprite;
     private scoreContainer:egret.Sprite;
     private scoreLbl:egret.TextField;
+
+    private fruitImgs:egret.SpriteSheet;
+    private fruits:egret.Bitmap[] = [];
+    private fruitContainers:egret.Sprite[] = [];
     /**
      * 创建游戏场景
      */
@@ -166,6 +170,38 @@ class GameApp extends egret.DisplayObjectContainer{
         scoreLbl.x = scoreHeadline.width + 4;
         this.scoreLbl = scoreLbl;
 
+        // 水果初始化
+        this.fruitImgs = RES.getRes("fruits");
+        var fruits:egret.Bitmap[] = [this.createBitmapByName("fruitBg"),
+                                        this.createBitmapByName("fruitBg"),
+                                        this.createBitmapByName("fruitBg")];
+        var fruitBgs:egret.Bitmap[] = [this.createBitmapByName("fruitBg"),
+                                        this.createBitmapByName("fruitBg"),
+                                        this.createBitmapByName("fruitBg")];
+        var fruitContainers:egret.Sprite[] = [];
+        for(var i=0;i<3;i++){
+            fruitContainers[i] = new egret.Sprite;
+            this.addChild(fruitContainers[i]);
+            fruitContainers[i].anchorX = fruitContainers[i].anchorY = 0.5;
+            fruitContainers[i].x = stageW * (1.1 + 1.5 * i) / 5;
+            fruitContainers[i].addChild(fruitBgs[i]);
+            fruitContainers[i].addChild(fruits[i]);
+            fruits[i].x = fruits[i].y = 10;
+            fruitContainers[i].visible = false;
+        }
+        fruitContainers[0].y = stageH * 0.53;
+        fruitContainers[1].y = stageH * 0.35;
+        fruitContainers[2].y = stageH * 0.57;
+        fruitBgs[0].scaleX = fruitBgs[0].scaleY = 0.5;
+        fruitBgs[1].scaleX = fruitBgs[1].scaleY = 0.42;
+        fruitBgs[2].scaleX = fruitBgs[2].scaleY = 0.45;
+        fruits[0].scaleX = fruits[0].scaleY = 0.4;
+        fruits[1].scaleX = fruits[1].scaleY =
+            fruits[2].scaleX = fruits[2].scaleY = 0.35;
+        this.fruits = fruits;
+        this.fruitContainers = fruitContainers;
+
+        /*
         var topMask:egret.Shape = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, stageH);
@@ -203,10 +239,46 @@ class GameApp extends egret.DisplayObjectContainer{
 
         //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
         RES.getResAsync("description",this.startAnimation,this)
+        */
+    }
+
+    private RefreshFruits() {
+        var dif,other,difElement:number;
+
+        dif = Math.random() * 12;
+        other = Math.random() * 12;
+        while(other == dif)
+            other= Math.random() * 12;
+        difElement = Math.random() * 3;
+
+        dif = Math.floor(dif);
+        other = Math.floor(other);
+        difElement = Math.floor(difElement);
+
+        for(var i=0;i<3;i=i+1){
+            if(i == difElement)
+                this.refreshFruit(this.fruits[i],dif);
+            else
+                this.refreshFruit(this.fruits[i],other);
+            this.fruitContainers[i].visible = true;
+            var fruitsTw = egret.Tween.get(this.fruitContainers[i]);
+            this.fruitContainers[i].scaleX = this.fruitContainers[i].scaleY = 0;
+            fruitsTw.to({
+                "scaleX": 1,
+                "scaleY": 1
+            }, 200, egret.Ease.quintInOut);
+        }
+    }
+
+    private refreshFruit(fruit:egret.Bitmap,index:number) {
+        var fruits:egret.SpriteSheet = this.fruitImgs;
+        var texture = fruits.getTexture("fruit" + index.toString());
+        fruit.texture = texture;
     }
 
     private startBtnOnTouch()
     {
+        this.startBtn.touchEnabled = false;
         this.HideStartView();
         this.ShowGameView();
     }
@@ -239,6 +311,8 @@ class GameApp extends egret.DisplayObjectContainer{
     private GameInit(){
         this.score = 0;
         this.scoreLbl.text = this.score.toString();
+
+        this.RefreshFruits();
     }
 
     /**
