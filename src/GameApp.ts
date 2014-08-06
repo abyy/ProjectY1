@@ -148,6 +148,7 @@ class GameApp extends egret.DisplayObjectContainer{
         timerLbl.size = 14;
         timerLbl.x = timerIcon.width / 2 + timerIcon.x + 4;
         timerLbl.y = 8;
+        this.timerLbl = timerLbl;
 
         // 得分容器
         var scoreContainer:egret.Sprite = new egret.Sprite();
@@ -188,6 +189,10 @@ class GameApp extends egret.DisplayObjectContainer{
             fruitContainers[i].addChild(fruits[i]);
             fruits[i].x = fruits[i].y = 10;
             fruitContainers[i].visible = false;
+
+            fruitContainers[i].name = i.toString();
+            fruitContainers[i].touchEnabled = true;
+            fruitContainers[i].addEventListener(egret.TouchEvent.TOUCH_TAP,this.fruitsOnTouch,this);
         }
         fruitContainers[0].y = stageH * 0.53;
         fruitContainers[1].y = stageH * 0.35;
@@ -242,6 +247,26 @@ class GameApp extends egret.DisplayObjectContainer{
         */
     }
 
+    private touchRight(){
+        this.scoreDelta(1);
+        this.RefreshFruits();
+    }
+
+    private touchWrong(){
+        alert("点错了!");
+    }
+
+    private fruitsOnTouch(event:egret.Event){
+        if(event.currentTarget.name == this.difElementIndex){
+            this.touchRight();
+        }
+        else{
+            this.touchWrong();
+        }
+    }
+
+    private difElementIndex:number;
+
     private RefreshFruits() {
         var dif,other,difElement:number;
 
@@ -254,6 +279,7 @@ class GameApp extends egret.DisplayObjectContainer{
         dif = Math.floor(dif);
         other = Math.floor(other);
         difElement = Math.floor(difElement);
+        this.difElementIndex = difElement;
 
         for(var i=0;i<3;i=i+1){
             if(i == difElement)
@@ -276,8 +302,7 @@ class GameApp extends egret.DisplayObjectContainer{
         fruit.texture = texture;
     }
 
-    private startBtnOnTouch()
-    {
+    private startBtnOnTouch(){
         this.startBtn.touchEnabled = false;
         this.HideStartView();
         this.ShowGameView();
@@ -307,12 +332,25 @@ class GameApp extends egret.DisplayObjectContainer{
         this.GameInit();
     }
 
-    private score:number;
-    private GameInit(){
-        this.score = 0;
-        this.scoreLbl.text = this.score.toString();
+    private score:number = 0;
+    private scoreDelta(delta:number){
+        var score = this.score;
+        score += delta;
+        this.scoreLbl.text = score.toString();
+    }
 
+    private GameInit(){
+        this.scoreDelta(0);
         this.RefreshFruits();
+    }
+
+    private timer:egret.Timer;
+    private timerLbl:egret.TextField;
+    private timerIni(){
+        var timer:egret.Timer = new egret.Timer(1000,0);
+        timer.addEventListener(egret.TimerEvent.TIMER,()=>{
+
+        },this);
     }
 
     /**

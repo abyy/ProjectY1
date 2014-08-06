@@ -184,6 +184,12 @@ var GameApp = (function (_super) {
             fruitContainers[i].addChild(fruits[i]);
             fruits[i].x = fruits[i].y = 10;
             fruitContainers[i].visible = false;
+
+            fruitContainers[i].name = i.toString();
+            fruitContainers[i].touchEnabled = true;
+            fruitContainers[i].addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
+                alert(i.toString());
+            }, this);
         }
         fruitContainers[0].y = stageH * 0.53;
         fruitContainers[1].y = stageH * 0.35;
@@ -236,6 +242,20 @@ var GameApp = (function (_super) {
         */
     };
 
+    GameApp.prototype.touchRight = function () {
+    };
+
+    GameApp.prototype.touchWrong = function () {
+    };
+
+    GameApp.prototype.fruitsOnTouch = function (event) {
+        if (event.currentTarget.name == this.difElementIndex) {
+            this.touchRight();
+        } else {
+            this.touchWrong();
+        }
+    };
+
     GameApp.prototype.RefreshFruits = function () {
         var dif, other, difElement;
 
@@ -248,6 +268,7 @@ var GameApp = (function (_super) {
         dif = Math.floor(dif);
         other = Math.floor(other);
         difElement = Math.floor(difElement);
+        this.difElementIndex = difElement;
 
         for (var i = 0; i < 3; i = i + 1) {
             if (i == difElement)
@@ -271,7 +292,7 @@ var GameApp = (function (_super) {
     };
 
     GameApp.prototype.startBtnOnTouch = function () {
-        //        this.startBtn.touchEnabled = false;
+        this.startBtn.touchEnabled = false;
         this.HideStartView();
         this.ShowGameView();
     };
