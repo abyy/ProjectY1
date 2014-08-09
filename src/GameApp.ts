@@ -144,11 +144,14 @@ class GameApp extends egret.DisplayObjectContainer{
         // 倒计时label
         var timerLbl:egret.TextField = new egret.TextField();
         timerContainer.addChild(timerLbl);
-        timerLbl.text = "20,00";
+        timerLbl.text = this.TimeToTimer(this.timeRest);
         timerLbl.size = 14;
         timerLbl.x = timerIcon.width / 2 + timerIcon.x + 4;
         timerLbl.y = 8;
         this.timerLbl = timerLbl;
+
+        // 倒计时初始化
+        this.timerIni();
 
         // 得分容器
         var scoreContainer:egret.Sprite = new egret.Sprite();
@@ -206,45 +209,6 @@ class GameApp extends egret.DisplayObjectContainer{
         this.fruits = fruits;
         this.fruitContainers = fruitContainers;
 
-        /*
-        var topMask:egret.Shape = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, stageH);
-        topMask.graphics.endFill();
-        topMask.width = stageW;
-        topMask.height = stageH;
-//        this.addChild(topMask);
-
-        var icon:egret.Bitmap = this.createBitmapByName("egretIcon");
-        icon.anchorX = icon.anchorY = 0.5;
-//        this.addChild(icon);
-        icon.x = stageW / 2;
-        icon.y = stageH / 2 - 60;
-        icon.scaleX = 0.55;
-        icon.scaleY = 0.55;
-
-        var colorLabel:egret.TextField = new egret.TextField();
-        colorLabel.x = stageW / 2;
-        colorLabel.y = stageH / 2 + 50;
-        colorLabel.anchorX = colorLabel.anchorY = 0.5;
-        colorLabel.textColor = 0xffffff;
-        colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 20;
-//        this.addChild(colorLabel);
-
-        var textContainer:egret.Sprite = new egret.Sprite();
-        textContainer.anchorX = textContainer.anchorY = 0.5;
-//        this.addChild(textContainer);
-        textContainer.x = stageW / 2;
-        textContainer.y = stageH / 2 + 100;
-        textContainer.alpha = 0;
-
-        this.textContainer = textContainer;
-
-        //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
-        RES.getResAsync("description",this.startAnimation,this)
-        */
     }
 
     private touchRight(){
@@ -336,21 +300,39 @@ class GameApp extends egret.DisplayObjectContainer{
     private scoreDelta(delta:number){
         var score = this.score;
         score += delta;
+        this.score = score;
         this.scoreLbl.text = score.toString();
     }
 
     private GameInit(){
         this.scoreDelta(0);
+        this.timer.start();
         this.RefreshFruits();
     }
 
     private timer:egret.Timer;
     private timerLbl:egret.TextField;
+    private timeRest:number = 20;
     private timerIni(){
-        var timer:egret.Timer = new egret.Timer(1000,0);
-        timer.addEventListener(egret.TimerEvent.TIMER,()=>{
+        var timer:egret.Timer = new egret.Timer(1000, 0);
+        timer.addEventListener(egret.TimerEvent.TIMER,this.timerTick,this);
+        this.timer = timer;
+    }
 
-        },this);
+    private timerTick(){
+        if(this.timeRest > 0) {
+            this.timeRest--;
+            this.timerLbl.text = this.TimeToTimer(this.timeRest);
+        }
+        else {
+            alert("time over");
+            this.timer.stop();
+        }
+    }
+
+    private TimeToTimer(t:number):string{
+        var timer:string = t.toString();
+        return timer;
     }
 
     /**

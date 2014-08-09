@@ -36,6 +36,8 @@ var GameApp = (function (_super) {
         _super.call(this);
         this.fruits = [];
         this.fruitContainers = [];
+        this.score = 0;
+        this.timeRest = 20;
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
     GameApp.prototype.onAddToStage = function (event) {
@@ -138,10 +140,14 @@ var GameApp = (function (_super) {
         // 倒计时label
         var timerLbl = new egret.TextField();
         timerContainer.addChild(timerLbl);
-        timerLbl.text = "20,00";
+        timerLbl.text = this.TimeToTimer(this.timeRest);
         timerLbl.size = 14;
         timerLbl.x = timerIcon.width / 2 + timerIcon.x + 4;
         timerLbl.y = 8;
+        this.timerLbl = timerLbl;
+
+        // 倒计时初始化
+        this.timerIni();
 
         // 得分容器
         var scoreContainer = new egret.Sprite();
@@ -187,9 +193,7 @@ var GameApp = (function (_super) {
 
             fruitContainers[i].name = i.toString();
             fruitContainers[i].touchEnabled = true;
-            fruitContainers[i].addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-                alert(i.toString());
-            }, this);
+            fruitContainers[i].addEventListener(egret.TouchEvent.TOUCH_TAP, this.fruitsOnTouch, this);
         }
         fruitContainers[0].y = stageH * 0.53;
         fruitContainers[1].y = stageH * 0.35;
@@ -201,51 +205,15 @@ var GameApp = (function (_super) {
         fruits[1].scaleX = fruits[1].scaleY = fruits[2].scaleX = fruits[2].scaleY = 0.35;
         this.fruits = fruits;
         this.fruitContainers = fruitContainers;
-        /*
-        var topMask:egret.Shape = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, stageH);
-        topMask.graphics.endFill();
-        topMask.width = stageW;
-        topMask.height = stageH;
-        //        this.addChild(topMask);
-        
-        var icon:egret.Bitmap = this.createBitmapByName("egretIcon");
-        icon.anchorX = icon.anchorY = 0.5;
-        //        this.addChild(icon);
-        icon.x = stageW / 2;
-        icon.y = stageH / 2 - 60;
-        icon.scaleX = 0.55;
-        icon.scaleY = 0.55;
-        
-        var colorLabel:egret.TextField = new egret.TextField();
-        colorLabel.x = stageW / 2;
-        colorLabel.y = stageH / 2 + 50;
-        colorLabel.anchorX = colorLabel.anchorY = 0.5;
-        colorLabel.textColor = 0xffffff;
-        colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 20;
-        //        this.addChild(colorLabel);
-        
-        var textContainer:egret.Sprite = new egret.Sprite();
-        textContainer.anchorX = textContainer.anchorY = 0.5;
-        //        this.addChild(textContainer);
-        textContainer.x = stageW / 2;
-        textContainer.y = stageH / 2 + 100;
-        textContainer.alpha = 0;
-        
-        this.textContainer = textContainer;
-        
-        //根据name关键字，异步获取一个json配置文件，name属性请参考resources/resource.json配置文件的内容。
-        RES.getResAsync("description",this.startAnimation,this)
-        */
     };
 
     GameApp.prototype.touchRight = function () {
+        this.scoreDelta(1);
+        this.RefreshFruits();
     };
 
     GameApp.prototype.touchWrong = function () {
+        alert("点错了!");
     };
 
     GameApp.prototype.fruitsOnTouch = function (event) {
@@ -321,11 +289,38 @@ var GameApp = (function (_super) {
         this.GameInit();
     };
 
-    GameApp.prototype.GameInit = function () {
-        this.score = 0;
-        this.scoreLbl.text = this.score.toString();
+    GameApp.prototype.scoreDelta = function (delta) {
+        var score = this.score;
+        score += delta;
+        this.score = score;
+        this.scoreLbl.text = score.toString();
+    };
 
+    GameApp.prototype.GameInit = function () {
+        this.scoreDelta(0);
+        this.timer.start();
         this.RefreshFruits();
+    };
+
+    GameApp.prototype.timerIni = function () {
+        var timer = new egret.Timer(1000, 0);
+        timer.addEventListener(egret.TimerEvent.TIMER, this.timerTick, this);
+        this.timer = timer;
+    };
+
+    GameApp.prototype.timerTick = function () {
+        if (this.timeRest > 0) {
+            this.timeRest--;
+            this.timerLbl.text = this.TimeToTimer(this.timeRest);
+        } else {
+            alert("time over");
+            this.timer.stop();
+        }
+    };
+
+    GameApp.prototype.TimeToTimer = function (t) {
+        var timer = t.toString();
+        return timer;
     };
 
     /**
