@@ -234,15 +234,17 @@ class GameApp extends egret.DisplayObjectContainer{
     private RefreshFruits() {
         var dif,other,difElement:number;
 
-        dif = Math.random() * 12;
-        other = Math.random() * 12;
-        while(other == dif)
-            other= Math.random() * 12;
-        difElement = Math.random() * 3;
-
+        dif = Math.random() * 12 + 1;
+        other = Math.random() * 12 + 1;
         dif = Math.floor(dif);
         other = Math.floor(other);
+        while(other == dif) {
+            other = Math.random() * 12;
+            other = Math.floor(other);
+        }
+        difElement = Math.random() * 3;
         difElement = Math.floor(difElement);
+
         this.difElementIndex = difElement;
 
         for(var i=0;i<3;i=i+1){

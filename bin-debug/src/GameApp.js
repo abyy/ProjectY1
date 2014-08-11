@@ -227,15 +227,21 @@ var GameApp = (function (_super) {
     GameApp.prototype.RefreshFruits = function () {
         var dif, other, difElement;
 
-        dif = Math.random() * 12;
-        other = Math.random() * 12;
-        while (other == dif)
-            other = Math.random() * 12;
-        difElement = Math.random() * 3;
-
+        dif = Math.random() * 12 + 1;
+        other = Math.random() * 12 + 1;
         dif = Math.floor(dif);
         other = Math.floor(other);
+        while (other == dif) {
+            other = Math.random() * 12;
+            other = Math.floor(other);
+        }
+        difElement = Math.random() * 3;
         difElement = Math.floor(difElement);
+
+        console.log("异类图片序号: " + dif);
+        console.log("同类图片序号: " + other);
+        console.log("异类索引: " + difElement);
+
         this.difElementIndex = difElement;
 
         for (var i = 0; i < 3; i = i + 1) {
