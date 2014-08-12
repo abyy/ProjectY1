@@ -35,6 +35,7 @@ var GameApp = (function (_super) {
     function GameApp() {
         _super.call(this);
         this.fruits = [];
+        this.fruitMasks = [];
         this.fruitContainers = [];
         this.score = 0;
         this.timeRest = 20;
@@ -180,6 +181,10 @@ var GameApp = (function (_super) {
             this.createBitmapByName("fruitBg"),
             this.createBitmapByName("fruitBg"),
             this.createBitmapByName("fruitBg")];
+        var fruitMasks = [
+            this.createBitmapByName("fruitMask"),
+            this.createBitmapByName("fruitMask"),
+            this.createBitmapByName("fruitMask")];
         var fruitContainers = [];
         for (var i = 0; i < 3; i++) {
             fruitContainers[i] = new egret.Sprite;
@@ -188,6 +193,8 @@ var GameApp = (function (_super) {
             fruitContainers[i].x = stageW * (1.1 + 1.5 * i) / 5;
             fruitContainers[i].addChild(fruitBgs[i]);
             fruitContainers[i].addChild(fruits[i]);
+            fruitContainers[i].addChild(fruitMasks[i]);
+            fruitMasks[i].alpha = 0;
             fruits[i].x = fruits[i].y = 10;
             fruitContainers[i].visible = false;
 
@@ -201,9 +208,13 @@ var GameApp = (function (_super) {
         fruitBgs[0].scaleX = fruitBgs[0].scaleY = 0.5;
         fruitBgs[1].scaleX = fruitBgs[1].scaleY = 0.42;
         fruitBgs[2].scaleX = fruitBgs[2].scaleY = 0.45;
+        fruitMasks[0].scaleX = fruitMasks[0].scaleY = 0.5;
+        fruitMasks[1].scaleX = fruitMasks[1].scaleY = 0.42;
+        fruitMasks[2].scaleX = fruitMasks[2].scaleY = 0.45;
         fruits[0].scaleX = fruits[0].scaleY = 0.4;
         fruits[1].scaleX = fruits[1].scaleY = fruits[2].scaleX = fruits[2].scaleY = 0.35;
         this.fruits = fruits;
+        this.fruitMasks = fruitMasks;
         this.fruitContainers = fruitContainers;
     };
 
@@ -213,7 +224,11 @@ var GameApp = (function (_super) {
     };
 
     GameApp.prototype.touchWrong = function () {
-        alert("点错了!");
+        for (var i = 0; i < 3; i++) {
+            if (i != this.difElementIndex) {
+                this.shiningAnimation(this.fruitMasks[i]);
+            }
+        }
     };
 
     GameApp.prototype.fruitsOnTouch = function (event) {
@@ -237,10 +252,6 @@ var GameApp = (function (_super) {
         }
         difElement = Math.random() * 3;
         difElement = Math.floor(difElement);
-
-        console.log("异类图片序号: " + dif);
-        console.log("同类图片序号: " + other);
-        console.log("异类索引: " + difElement);
 
         this.difElementIndex = difElement;
 
@@ -327,6 +338,22 @@ var GameApp = (function (_super) {
     GameApp.prototype.TimeToTimer = function (t) {
         var timer = t.toString();
         return timer;
+    };
+
+    GameApp.prototype.shiningAnimation = function (target) {
+        var count = 0;
+        var change = function () {
+            if (count > 2)
+                return;
+            var tw = egret.Tween.get(target);
+            tw.to({ "alpha": 0.6 }, 100, egret.Ease.quadIn);
+            tw.wait(100);
+            tw.to({ "alpha": 0 }, 100, egret.Ease.quadOut);
+            tw.wait(100);
+            tw.call(change, this);
+            count++;
+        };
+        change();
     };
 
     /**
