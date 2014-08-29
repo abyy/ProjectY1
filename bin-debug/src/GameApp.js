@@ -413,3 +413,4 @@ var GameApp = (function (_super) {
     };
     return GameApp;
 })(egret.DisplayObjectContainer);
+GameApp.prototype.__class__ = "GameApp";

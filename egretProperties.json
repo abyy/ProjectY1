@@ -1,9 +1,21 @@
 {
-    "document_class" : "GameApp",
-    "game_dir_tree": [
-        "bin-debug/",
-        "launcher/",
-        "resource/",
-        "src/"
-    ]
+	"document_class": "GameApp",
+	"game_dir_tree": [
+		"bin-debug/",
+		"launcher/",
+		"resource/",
+		"src/"
+	],
+	"modules": [
+		{
+			"name": "core"
+		},
+		{
+			"name": "gui"
+		},
+		{
+			"name": "dragonbones"
+		}
+	],
+	"egret_version": "1.0.4"
 }
