@@ -1,9 +1,14 @@
 {
-    "document_class" : "GameApp",
-    "game_dir_tree": [
-        "bin-debug/",
-        "launcher/",
-        "resource/",
-        "src/"
-    ]
+    "document_class": "Main",
+    "modules": [
+        {
+            "name": "core"
+        }
+    ],
+    "native": {
+        "path_ignore": [
+
+        ]
+    },
+    "egret_version":"1.0.5"
 }
