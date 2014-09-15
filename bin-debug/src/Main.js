@@ -98,17 +98,17 @@ var Main = (function (_super) {
         // Logo
         var appLogo = this.createBitmapByName("logo");
         this.addChild(appLogo);
-        appLogo.scaleX = 0.5;
-        appLogo.scaleY = 0.5;
+        appLogo.scaleX = 0.75;
+        appLogo.scaleY = 0.75;
         appLogo.anchorX = 0.5;
         appLogo.x = stageW / 2;
-        appLogo.y = 15;
+        appLogo.y = stageH / 40;
         this.appLogo = appLogo;
 
         // 底部青蛙
         var frog = this.createBitmapByName("frogImg");
         this.addChild(frog);
-        frog.scaleX = frog.scaleY = 0.5;
+        frog.scaleX = frog.scaleY = 0.75;
         frog.anchorOffsetY = frog.height;
         frog.y = stageH;
 
@@ -116,7 +116,7 @@ var Main = (function (_super) {
         var startBtn = this.createBitmapByName("startBtn");
         this.addChild(startBtn);
         startBtn.anchorX = startBtn.anchorY = 0.5;
-        startBtn.scaleX = startBtn.scaleY = 0.5;
+        startBtn.scaleX = startBtn.scaleY = 0.75;
         startBtn.x = stageW / 2;
         startBtn.y = stageH / 2;
         startBtn.touchEnabled = true;
@@ -135,16 +135,16 @@ var Main = (function (_super) {
         // 倒计时icon
         var timerIcon = this.createBitmapByName("timerImg");
         timerContainer.addChild(timerIcon);
-        timerIcon.scaleX = timerIcon.scaleY = 0.5;
-        timerIcon.x = -6;
+        timerIcon.scaleX = timerIcon.scaleY = 0.75;
+        timerIcon.x = -14;
 
         // 倒计时label
         var timerLbl = new egret.TextField();
         timerContainer.addChild(timerLbl);
         timerLbl.text = this.TimeToTimer(this.timeRest);
-        timerLbl.size = 14;
-        timerLbl.x = timerIcon.width / 2 + timerIcon.x + 4;
-        timerLbl.y = 8;
+        timerLbl.size = 20;
+        timerLbl.x = timerIcon.width / 2 + timerIcon.x + 16;
+        timerLbl.y = 10;
         this.timerLbl = timerLbl;
 
         // 倒计时初始化
@@ -154,7 +154,7 @@ var Main = (function (_super) {
         var scoreContainer = new egret.Sprite();
         this.addChild(scoreContainer);
         scoreContainer.x = 8;
-        scoreContainer.y = 14;
+        scoreContainer.y = 16;
         scoreContainer.visible = false;
         this.scoreContainer = scoreContainer;
 
@@ -162,12 +162,12 @@ var Main = (function (_super) {
         var scoreHeadline = new egret.TextField();
         scoreContainer.addChild(scoreHeadline);
         scoreHeadline.text = "得分";
-        scoreHeadline.size = 14;
+        scoreHeadline.size = 20;
 
         // 得分label
         var scoreLbl = new egret.TextField();
         scoreContainer.addChild(scoreLbl);
-        scoreLbl.size = 14;
+        scoreLbl.size = 20;
         scoreLbl.x = scoreHeadline.width + 4;
         this.scoreLbl = scoreLbl;
 
@@ -204,15 +204,15 @@ var Main = (function (_super) {
         }
         fruitContainers[0].y = stageH * 0.53;
         fruitContainers[1].y = stageH * 0.35;
-        fruitContainers[2].y = stageH * 0.57;
-        fruitBgs[0].scaleX = fruitBgs[0].scaleY = 0.5;
-        fruitBgs[1].scaleX = fruitBgs[1].scaleY = 0.42;
-        fruitBgs[2].scaleX = fruitBgs[2].scaleY = 0.45;
-        fruitMasks[0].scaleX = fruitMasks[0].scaleY = 0.5;
-        fruitMasks[1].scaleX = fruitMasks[1].scaleY = 0.42;
-        fruitMasks[2].scaleX = fruitMasks[2].scaleY = 0.45;
-        fruits[0].scaleX = fruits[0].scaleY = 0.4;
-        fruits[1].scaleX = fruits[1].scaleY = fruits[2].scaleX = fruits[2].scaleY = 0.35;
+        fruitContainers[2].y = stageH * 0.55;
+        fruitBgs[0].scaleX = fruitBgs[0].scaleY = 0.75;
+        fruitBgs[1].scaleX = fruitBgs[1].scaleY = 0.63;
+        fruitBgs[2].scaleX = fruitBgs[2].scaleY = 0.67;
+        fruitMasks[0].scaleX = fruitMasks[0].scaleY = 0.75;
+        fruitMasks[1].scaleX = fruitMasks[1].scaleY = 0.63;
+        fruitMasks[2].scaleX = fruitMasks[2].scaleY = 0.67;
+        fruits[0].scaleX = fruits[0].scaleY = 0.6;
+        fruits[1].scaleX = fruits[1].scaleY = fruits[2].scaleX = fruits[2].scaleY = 0.53;
         this.fruits = fruits;
         this.fruitMasks = fruitMasks;
         this.fruitContainers = fruitContainers;
@@ -364,52 +364,6 @@ var Main = (function (_super) {
         var texture = RES.getRes(name);
         result.texture = texture;
         return result;
-    };
-
-    /**
-    * 描述文件加载成功，开始播放动画
-    */
-    Main.prototype.startAnimation = function (result) {
-        var textContainer = this.textContainer;
-        var count = -1;
-        var self = this;
-        var change = function () {
-            count++;
-            if (count >= result.length) {
-                count = 0;
-            }
-            var lineArr = result[count];
-
-            self.changeDescription(textContainer, lineArr);
-
-            var tw = egret.Tween.get(textContainer);
-            tw.to({ "alpha": 1 }, 200);
-            tw.wait(2000);
-            tw.to({ "alpha": 0 }, 200);
-            tw.call(change, this);
-        };
-
-        change();
-    };
-
-    /**
-    * 切换描述内容
-    */
-    Main.prototype.changeDescription = function (textContainer, lineArr) {
-        textContainer.removeChildren();
-        var w = 0;
-        for (var i = 0; i < lineArr.length; i++) {
-            var info = lineArr[i];
-            var colorLabel = new egret.TextField();
-            colorLabel.x = w;
-            colorLabel.anchorX = colorLabel.anchorY = 0;
-            colorLabel.textColor = parseInt(info["textColor"]);
-            colorLabel.text = info["text"];
-            colorLabel.size = 40;
-            textContainer.addChild(colorLabel);
-
-            w += colorLabel.width;
-        }
     };
     return Main;
 })(egret.DisplayObjectContainer);
