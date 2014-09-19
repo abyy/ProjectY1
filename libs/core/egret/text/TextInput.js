@@ -53,13 +53,35 @@ var egret;
             this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onMouseDownHandler, this);
         };
 
+        /**
+        * @deprecated
+        * @param value
+        */
         TextInput.prototype.setText = function (value) {
+            egret.Logger.warning("TextInput.setText()已废弃，请使用TextInput.text设置");
             this.stageText._setText(value);
         };
 
+        /**
+        * @deprecated
+        * @returns {string}
+        */
         TextInput.prototype.getText = function () {
+            egret.Logger.warning("TextInput.getText()已废弃，请使用TextInput.text获取");
             return this.stageText._getText();
         };
+
+
+        Object.defineProperty(TextInput.prototype, "text", {
+            get: function () {
+                return this.stageText._getText();
+            },
+            set: function (value) {
+                this.stageText._setText(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         TextInput.prototype.setTextType = function (type) {
             this.stageText._setTextType(type);

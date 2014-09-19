@@ -49,6 +49,7 @@ var egret;
             this._designHeight = 0;
             this._scaleX = 1;
             this._scaleY = 1;
+            this._offSetY = 0;
             var canvas = document.getElementById(StageDelegate.canvas_name);
             var w = canvas.width, h = canvas.height;
             this._designWidth = w;
@@ -103,6 +104,13 @@ var egret;
         */
         StageDelegate.prototype.getScaleY = function () {
             return this._scaleY;
+        };
+
+        /**
+        * @method egret.StageDelegate#getOffSetY
+        */
+        StageDelegate.prototype.getOffSetY = function () {
+            return this._offSetY;
         };
         StageDelegate.canvas_name = "gameCanvas";
 
@@ -397,8 +405,10 @@ var egret;
         */
         NoScale.prototype._apply = function (delegate, designedResolutionWidth, designedResolutionHeight) {
             var canvas = document.getElementById(StageDelegate.canvas_name);
-            canvas.style.width = canvas.width + "px";
-            canvas.style.height = canvas.height + "px";
+            canvas.width = designedResolutionWidth;
+            canvas.height = designedResolutionHeight;
+            canvas.style.width = designedResolutionWidth + "px";
+            canvas.style.height = designedResolutionHeight + "px";
             delegate._scaleX = 1;
             delegate._scaleY = 1;
         };
@@ -437,7 +447,9 @@ var egret;
             canvas.height = designH / scale2;
             canvas.style.width = (viewPortWidth * scale2) + "px";
             canvas.style.height = viewPortHeight + "px";
-            canvas.style.top = Math.floor((document.documentElement.clientHeight - viewPortHeight) / 2) + "px";
+
+            delegate._offSetY = Math.floor((document.documentElement.clientHeight - viewPortHeight) / 2);
+            canvas.style.top = delegate._offSetY + "px";
             container.style.width = (viewPortWidth * scale2) + "px";
             container.style.height = viewPortHeight + "px";
             delegate._scaleX = scale * scale2;
@@ -447,4 +459,43 @@ var egret;
     })(ContentStrategy);
     egret.ShowAll = ShowAll;
     ShowAll.prototype.__class__ = "egret.ShowAll";
+
+    var FullScreen = (function (_super) {
+        __extends(FullScreen, _super);
+        function FullScreen() {
+            _super.call(this);
+        }
+        /**
+        * @method egret.NoScale#_apply
+        * @param delegate {egret.StageDelegate}
+        * @param designedResolutionWidth {number}
+        * @param designedResolutionHeight {number}
+        */
+        FullScreen.prototype._apply = function (delegate, designedResolutionWidth, designedResolutionHeight) {
+            var canvas = document.getElementById(StageDelegate.canvas_name);
+            var container = document.getElementById(StageDelegate.canvas_div_name);
+            var viewPortWidth = document.documentElement.clientWidth;
+            var viewPortHeight = document.documentElement.clientHeight;
+
+            var designW = designedResolutionWidth;
+            var designH = designedResolutionHeight;
+            var scalex = viewPortWidth / designedResolutionWidth;
+            var scaley = viewPortHeight / designedResolutionHeight;
+
+            viewPortWidth = designW * scalex;
+            viewPortHeight = designH * scaley;
+
+            canvas.width = designW;
+            canvas.height = designH;
+            canvas.style.width = viewPortWidth + "px";
+            canvas.style.height = viewPortHeight + "px";
+            container.style.width = viewPortWidth + "px";
+            container.style.height = viewPortHeight + "px";
+            delegate._scaleX = scalex;
+            delegate._scaleY = scaley;
+        };
+        return FullScreen;
+    })(ContentStrategy);
+    egret.FullScreen = FullScreen;
+    FullScreen.prototype.__class__ = "egret.FullScreen";
 })(egret || (egret = {}));

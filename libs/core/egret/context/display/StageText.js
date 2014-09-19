@@ -41,7 +41,7 @@ var egret;
         __extends(StageText, _super);
         function StageText() {
             _super.call(this);
-            this._size = 20;
+            this._size = 30;
         }
         /**
         * @method egret.StageText#getText
@@ -113,11 +113,36 @@ var egret;
             this.inputElement = inputElement;
         };
 
+        StageText.prototype._addListeners = function () {
+            this.inputElement.addEventListener("MSPointerDown", this.onHandler);
+            this.inputElement.addEventListener("MSPointerMove", this.onHandler);
+            this.inputElement.addEventListener("MSPointerUp", this.onHandler);
+            this.inputElement.addEventListener("touchstart", this.onHandler);
+            this.inputElement.addEventListener("touchmove", this.onHandler);
+            this.inputElement.addEventListener("touchend", this.onHandler);
+            this.inputElement.addEventListener("touchcancel", this.onHandler);
+        };
+
+        StageText.prototype._removeListeners = function () {
+            this.inputElement.removeEventListener("MSPointerDown", this.onHandler);
+            this.inputElement.removeEventListener("MSPointerMove", this.onHandler);
+            this.inputElement.removeEventListener("MSPointerUp", this.onHandler);
+            this.inputElement.removeEventListener("touchstart", this.onHandler);
+            this.inputElement.removeEventListener("touchmove", this.onHandler);
+            this.inputElement.removeEventListener("touchend", this.onHandler);
+            this.inputElement.removeEventListener("touchcancel", this.onHandler);
+        };
+
+        StageText.prototype.onHandler = function (e) {
+            e["isScroll"] = true;
+        };
+
         StageText.prototype.getStageDelegateDiv = function () {
             var stageDelegateDiv = egret.Browser.getInstance().$("#StageDelegateDiv");
             if (!stageDelegateDiv) {
                 stageDelegateDiv = egret.Browser.getInstance().$new("div");
                 stageDelegateDiv.id = "StageDelegateDiv";
+                stageDelegateDiv.style["top"] = egret.StageDelegate.getInstance().getOffSetY() + "px";
                 var container = document.getElementById(egret.StageDelegate.canvas_div_name);
                 container.appendChild(stageDelegateDiv);
                 stageDelegateDiv.transforms();
@@ -134,6 +159,8 @@ var egret;
                 var stageDelegateDiv = this.getStageDelegateDiv();
                 stageDelegateDiv.appendChild(div);
             }
+
+            this._addListeners();
         };
 
         /**
@@ -144,6 +171,8 @@ var egret;
             if (div && div.parentNode) {
                 div.parentNode.removeChild(div);
             }
+
+            this._removeListeners();
         };
 
         StageText.prototype.changePosition = function (x, y) {

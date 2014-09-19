@@ -54,6 +54,13 @@ declare module egret {
         private registerListener();
     }
 }
+declare module egret_html5_localStorage {
+    function getItem(key: string): string;
+    function setItem(key: string, value: string): void;
+    function removeItem(key: string): void;
+    function clear(): void;
+    function init(): void;
+}
 /**
 * Copyright (c) 2014,Egret-Labs.org
 * All rights reserved.
@@ -101,6 +108,7 @@ declare module egret {
         public _transformTx: number;
         public _transformTy: number;
         private blendValue;
+        private globalAlpha;
         constructor(canvas: any);
         public clearScreen(): void;
         public clearRect(x: number, y: number, w: number, h: number): void;
@@ -113,6 +121,8 @@ declare module egret {
         public strokeRect(x: any, y: any, w: any, h: any, color: any): void;
         public pushMask(mask: Rectangle): void;
         public popMask(): void;
+        public onRenderStart(): void;
+        public onRenderFinish(): void;
     }
 }
 declare module egret_h5_graphics {
@@ -396,6 +406,7 @@ declare module egret {
         private canvas;
         private _isTouchDown;
         constructor(canvas: HTMLCanvasElement);
+        private prevent(event);
         public run(): void;
         private addMouseListener();
         private addTouchListener();

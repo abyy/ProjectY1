@@ -419,14 +419,13 @@ declare module egret {
         * @member {boolean} egret.Event#eventPhase
         */
         public eventPhase : number;
-        private _currentTarget;
+        public _currentTarget: any;
         /**
         * 当前正在使用某个事件侦听器处理 Event 对象的对象。例如，如果用户单击“确定”按钮，
         * 则当前目标可以是包含该按钮的节点，也可以是它的已为该事件注册了事件侦听器的始祖之一。
         * @member {any} egret.Event#currentTarget
         */
         public currentTarget : any;
-        public _setCurrentTarget(target: any): void;
         public _target: any;
         /**
         * 事件目标。此属性包含目标节点。例如，如果用户单击“确定”按钮，则目标节点就是包含该按钮的显示列表节点。
@@ -602,26 +601,19 @@ declare module egret {
         */
         static TOUCH_RELEASE_OUTSIDE: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @member egret.TouchEvent.TOUCH_MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_ROLL_OUT
+        * @deprecated
         */
         static TOUCH_ROLL_OUT: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @member egret.TouchEvent.TOUCH_MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_ROLL_OVER
+        * @deprecated
         */
         static TOUCH_ROLL_OVER: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_OUT
+        * @deprecated
         */
         static TOUCH_OUT: string;
         /**
-        * 移动，参考FLash的MouseEvent.MOVE
-        * @member egret.TouchEvent.TOUCH_MOVE
-        * @constant {string} egret.TouchEvent.TOUCH_OVER
+        * @deprecated
         */
         static TOUCH_OVER: string;
         public _stageX: number;
@@ -636,13 +628,11 @@ declare module egret {
         * @member {number} egret.TouchEvent#stageY
         */
         public stageY : number;
-        private _localX;
         /**
         * 事件发生点相对于currentTarget的水平坐标。
         * @member {number} egret.TouchEvent#localX
         */
         public localX : number;
-        private _localY;
         /**
         * 事件发生点相对于currentTarget的垂直坐标。
         * @member {number} egret.TouchEvent#localY
@@ -655,16 +645,19 @@ declare module egret {
         public touchPointID: number;
         /**
         * 事件发生时ctrl键是否被按下。 (Mac OS下为 Cmd 或 Ctrl)
+        * @deprecated
         * @member {boolean} egret.TouchEvent#ctrlKey
         */
         public ctrlKey: boolean;
         /**
         * 事件发生时shift键是否被按下。
+        * @deprecated
         * @member {boolean} egret.TouchEvent#shiftKey
         */
         public shiftKey: boolean;
         /**
         * 事件发生时alt键是否被按下。
+        * @deprecated
         * @member {boolean} egret.TouchEvent#altKey
         */
         public altKey: boolean;
@@ -673,7 +666,6 @@ declare module egret {
         * @member {boolean} egret.TouchEvent#touchDown
         */
         public touchDown: boolean;
-        public _setCurrentTarget(target: any): void;
         /**
         * 使用指定的EventDispatcher对象来抛出Event事件对象。抛出的对象将会缓存在对象池上，供下次循环复用。
         * @method egret.TouchEvent.dispatchTouchEvent
@@ -1070,6 +1062,9 @@ declare module egret {
         static deviceType: string;
         static DEVICE_PC: string;
         static DEVICE_MOBILE: string;
+        static runtimeType: string;
+        static RUNTIME_HTML5: string;
+        static RUNTIME_NATIVE: string;
         /**
         * 游戏启动，开启主循环，参考Flash的滑动跑道模型
         * @method egret.MainContext#run
@@ -1096,9 +1091,11 @@ declare module egret {
         * @member egret.MainContext.instance
         */
         static instance: MainContext;
+        private static cachedEvent;
     }
 }
 declare var testDeviceType: () => boolean;
+declare var testRuntimeType: () => boolean;
 /**
 * Copyright (c) 2014,Egret-Labs.org
 * All rights reserved.
@@ -1817,6 +1814,12 @@ declare module egret {
         */
         public identity(): Matrix;
         /**
+        * 矩阵重置为目标矩阵
+        * @method egret.Matrix#identityMatrix
+        * @returns {egret.Matrix}
+        */
+        public identityMatrix(matrix: Matrix): Matrix;
+        /**
         * 矩阵翻转
         * @method egret.Matrix#invert
         * @returns {egret.Matrix}
@@ -2192,6 +2195,7 @@ declare module egret {
         private _designHeight;
         public _scaleX: number;
         public _scaleY: number;
+        public _offSetY: number;
         private _resolutionPolicy;
         /**
         * @method egret.StageDelegate#constructor
@@ -2216,6 +2220,10 @@ declare module egret {
         * @method egret.StageDelegate#getScaleY
         */
         public getScaleY(): number;
+        /**
+        * @method egret.StageDelegate#getOffSetY
+        */
+        public getOffSetY(): number;
     }
     /**
     * @class egret.ResolutionPolicy
@@ -2358,6 +2366,16 @@ declare module egret {
         public _apply(delegate: StageDelegate, designedResolutionWidth: number, designedResolutionHeight: number): void;
     }
     class ShowAll extends ContentStrategy {
+        constructor();
+        /**
+        * @method egret.NoScale#_apply
+        * @param delegate {egret.StageDelegate}
+        * @param designedResolutionWidth {number}
+        * @param designedResolutionHeight {number}
+        */
+        public _apply(delegate: StageDelegate, designedResolutionWidth: number, designedResolutionHeight: number): void;
+    }
+    class FullScreen extends ContentStrategy {
         constructor();
         /**
         * @method egret.NoScale#_apply
@@ -2654,12 +2672,14 @@ declare module egret {
         */
         public _x: number;
         public x : number;
+        public _setX(value: number): void;
         /**
         * 表示 DisplayObject 实例相对于父级 DisplayObjectContainer 本地坐标的 y 坐标。
         * @member {number} egret.DisplayObject#y
         */
         public _y: number;
         public y : number;
+        public _setY(value: number): void;
         /**
         * 表示从注册点开始应用的对象的水平缩放比例（百分比）。
         * @member {number} egret.DisplayObject#scaleX
@@ -2708,6 +2728,7 @@ declare module egret {
         */
         public _visible: boolean;
         public visible : boolean;
+        public _setVisible(value: boolean): void;
         /**
         * 表示 DisplayObject 实例距其原始方向的旋转程度，以度为单位
         * @member {number} egret.DisplayObject#rotation
@@ -2825,6 +2846,11 @@ declare module egret {
         */
         public _updateTransform(): void;
         /**
+        * 计算全局数据
+        * @private
+        */
+        public _calculateWorldform(): void;
+        /**
         * @private
         * @param renderContext
         */
@@ -2911,7 +2937,7 @@ declare module egret {
         public addEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean, priority?: number): void;
         public removeEventListener(type: string, listener: Function, thisObject: any, useCapture?: boolean): void;
         public dispatchEvent(event: Event): boolean;
-        public _dispatchPropagationEvent(event: Event, list: DisplayObject[], targetIndex: number): void;
+        public _dispatchPropagationEvent(event: Event, list: DisplayObject[], targetIndex?: number): void;
         public willTrigger(type: string): boolean;
         public cacheAsBitmap : boolean;
         private renderTexture;
@@ -3179,6 +3205,7 @@ declare module egret {
         static NO_BORDER: string;
         static NO_SCALE: string;
         static SHOW_ALL: string;
+        static EXACT_FIT: string;
     }
 }
 /**
@@ -3886,8 +3913,17 @@ declare module egret {
         private stageText;
         constructor();
         public _onAddToStage(): void;
+        /**
+        * @deprecated
+        * @param value
+        */
         public setText(value: string): void;
+        /**
+        * @deprecated
+        * @returns {string}
+        */
         public getText(): string;
+        public text : string;
         public setTextType(type: string): void;
         public getTextType(): string;
         private onMouseDownHandler(event);
@@ -4135,6 +4171,9 @@ declare module egret {
         * @param height {number}
         */
         public _open(x: number, y: number, width?: number, height?: number): void;
+        private _addListeners();
+        private _removeListeners();
+        private onHandler(e);
         private getStageDelegateDiv();
         /**
         * @method egret.StageText#add
@@ -4706,6 +4745,8 @@ declare module egret {
         public strokeRect(x: any, y: any, w: any, h: any, color: any): void;
         public pushMask(mask: Rectangle): void;
         public popMask(): void;
+        public onRenderStart(): void;
+        public onRenderFinish(): void;
         static createRendererContext(canvas: any): RendererContext;
     }
 }
@@ -4838,6 +4879,7 @@ declare module egret {
     class NetContext extends HashObject {
         constructor();
         public proceed(loader: URLLoader): void;
+        static _getUrl(request: URLRequest): string;
     }
 }
 /**
@@ -4988,6 +5030,38 @@ declare module egret {
         public scale(a: any): string;
         public skew(a: any): string;
     }
+}
+/**
+* Copyright (c) 2014,Egret-Labs.org
+* All rights reserved.
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions are met:
+*
+*     * Redistributions of source code must retain the above copyright
+*       notice, this list of conditions and the following disclaimer.
+*     * Redistributions in binary form must reproduce the above copyright
+*       notice, this list of conditions and the following disclaimer in the
+*       documentation and/or other materials provided with the distribution.
+*     * Neither the name of the Egret-Labs.org nor the
+*       names of its contributors may be used to endorse or promote products
+*       derived from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY EGRET-LABS.ORG AND CONTRIBUTORS "AS IS" AND ANY
+* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+* DISCLAIMED. IN NO EVENT SHALL EGRET-LABS.ORG AND CONTRIBUTORS BE LIABLE FOR ANY
+* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+declare module egret.localStorage {
+    function getItem(key: string): string;
+    function setItem(key: string, value: string): void;
+    function removeItem(key: string): void;
+    function clear(): void;
 }
 /**
 * Copyright (c) 2014,Egret-Labs.org
@@ -5327,6 +5401,16 @@ declare module egret {
         * @param target {egret.DisplayObject}
         */
         static removeTweens(target: any): void;
+        /**
+        * 暂停某个元件的所有缓动
+        * @param target
+        */
+        static pauseTweens(target: any): void;
+        /**
+        * 继续播放某个元件的所有缓动
+        * @param target
+        */
+        static resumeTweens(target: any): void;
         private static tick(delta, paused?);
         private static _register(tween, value);
         /**
@@ -5836,6 +5920,13 @@ declare module RES {
         */
         public parseConfig(data: any, folder: string): void;
         /**
+        * 添加一个二级键名到配置列表。
+        * @method RES.ResourceConfig#addSubkey
+        * @param subkey {string} 要添加的二级键名
+        * @param name {string} 二级键名所属的资源name属性
+        */
+        public addSubkey(subkey: string, name: string): void;
+        /**
         * 添加一个加载项数据到列表
         */
         private addItemToKeyMap(item);
@@ -6001,6 +6092,14 @@ declare module RES {
 declare module RES {
     class AnalyzerBase extends egret.HashObject {
         constructor();
+        private resourceConfig;
+        /**
+        * 添加一个二级键名到配置列表。
+        * @method RES.ResourceConfig#addSubkey
+        * @param subkey {string} 要添加的二级键名
+        * @param name {string} 二级键名所属的资源name属性
+        */
+        public addSubkey(subkey: string, name: string): void;
         /**
         * 加载一个资源文件
         * @param resItem 加载项信息
@@ -6208,7 +6307,7 @@ declare module RES {
         */
         public analyzeData(resItem: ResourceItem, data: any): void;
         private getRelativePath(url, file);
-        public parseSpriteSheet(texture: egret.Texture, data: any): egret.SpriteSheet;
+        public parseSpriteSheet(texture: egret.Texture, data: any, name: string): egret.SpriteSheet;
     }
 }
 /**

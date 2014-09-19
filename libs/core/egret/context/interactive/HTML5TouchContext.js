@@ -39,23 +39,27 @@ var egret;
             this.canvas = canvas;
             this._isTouchDown = false;
         }
+        HTML5TouchContext.prototype.prevent = function (event) {
+            event.stopPropagation();
+            if (event["isScroll"] != true) {
+                event.preventDefault();
+            }
+        };
+
         HTML5TouchContext.prototype.run = function () {
             var that = this;
             if (window.navigator.msPointerEnabled) {
-                this.canvas.addEventListener("MSPointerDown", function (event) {
+                document.body.addEventListener("MSPointerDown", function (event) {
                     that._onTouchBegin(event);
-                    event.stopPropagation();
-                    event.preventDefault();
+                    that.prevent(event);
                 }, false);
-                this.canvas.addEventListener("MSPointerMove", function (event) {
+                document.body.addEventListener("MSPointerMove", function (event) {
                     that._onTouchMove(event);
-                    event.stopPropagation();
-                    event.preventDefault();
+                    that.prevent(event);
                 }, false);
-                this.canvas.addEventListener("MSPointerUp", function (event) {
+                document.body.addEventListener("MSPointerUp", function (event) {
                     that._onTouchEnd(event);
-                    event.stopPropagation();
-                    event.preventDefault();
+                    that.prevent(event);
                 }, false);
             } else if (egret.MainContext.deviceType == egret.MainContext.DEVICE_MOBILE) {
                 this.addTouchListener();
@@ -82,50 +86,46 @@ var egret;
 
         HTML5TouchContext.prototype.addMouseListener = function () {
             var that = this;
-            this.canvas.addEventListener("mousedown", function (event) {
+            document.body.addEventListener("mousedown", function (event) {
                 that._onTouchBegin(event);
             });
-            this.canvas.addEventListener("mousemove", function (event) {
+            document.body.addEventListener("mousemove", function (event) {
                 that._onTouchMove(event);
             });
-            this.canvas.addEventListener("mouseup", function (event) {
+            document.body.addEventListener("mouseup", function (event) {
                 that._onTouchEnd(event);
             });
         };
 
         HTML5TouchContext.prototype.addTouchListener = function () {
             var that = this;
-            this.canvas.addEventListener("touchstart", function (event) {
+            document.body.addEventListener("touchstart", function (event) {
                 var l = event.changedTouches.length;
                 for (var i = 0; i < l; i++) {
                     that._onTouchBegin(event.changedTouches[i]);
                 }
-                event.stopPropagation();
-                event.preventDefault();
+                that.prevent(event);
             }, false);
-            this.canvas.addEventListener("touchmove", function (event) {
+            document.body.addEventListener("touchmove", function (event) {
                 var l = event.changedTouches.length;
                 for (var i = 0; i < l; i++) {
                     that._onTouchMove(event.changedTouches[i]);
                 }
-                event.stopPropagation();
-                event.preventDefault();
+                that.prevent(event);
             }, false);
-            this.canvas.addEventListener("touchend", function (event) {
+            document.body.addEventListener("touchend", function (event) {
                 var l = event.changedTouches.length;
                 for (var i = 0; i < l; i++) {
                     that._onTouchEnd(event.changedTouches[i]);
                 }
-                event.stopPropagation();
-                event.preventDefault();
+                that.prevent(event);
             }, false);
-            this.canvas.addEventListener("touchcancel", function (event) {
+            document.body.addEventListener("touchcancel", function (event) {
                 var l = event.changedTouches.length;
                 for (var i = 0; i < l; i++) {
                     that._onTouchEnd(event.changedTouches[i]);
                 }
-                event.stopPropagation();
-                event.preventDefault();
+                that.prevent(event);
             }, false);
         };
 

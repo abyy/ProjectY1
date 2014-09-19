@@ -40,6 +40,8 @@ var egret;
     var HTML5CanvasRenderer = (function (_super) {
         __extends(HTML5CanvasRenderer, _super);
         function HTML5CanvasRenderer(canvas) {
+            _super.call(this);
+            this.globalAlpha = 1;
             this.canvas = canvas;
             this.canvasContext = canvas.getContext("2d");
             var f = this.canvasContext.setTransform;
@@ -65,11 +67,11 @@ var egret;
             _super.call(this);
         }
         HTML5CanvasRenderer.prototype.clearScreen = function () {
-            this.setTransform(egret.Matrix.identity.identity());
+            //            this.setTransform(egret.Matrix.identity.identity());
             var list = egret.RenderFilter.getInstance().getDrawAreaList();
             for (var i = 0, l = list.length; i < l; i++) {
                 var area = list[i];
-                this.clearRect(area.x + this._transformTx, area.y + this._transformTy, area.width, area.height);
+                this.clearRect(area.x, area.y, area.width, area.height);
             }
             this.renderCost = 0;
         };
@@ -79,10 +81,11 @@ var egret;
         };
 
         HTML5CanvasRenderer.prototype.drawImage = function (texture, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight) {
-            sourceX = sourceX / egret.MainContext.instance.rendererContext.texture_scale_factor;
-            sourceY = sourceY / egret.MainContext.instance.rendererContext.texture_scale_factor;
-            sourceWidth = sourceWidth / egret.MainContext.instance.rendererContext.texture_scale_factor;
-            sourceHeight = sourceHeight / egret.MainContext.instance.rendererContext.texture_scale_factor;
+            var scale = egret.MainContext.instance.rendererContext.texture_scale_factor;
+            sourceX = sourceX / scale;
+            sourceY = sourceY / scale;
+            sourceWidth = sourceWidth / scale;
+            sourceHeight = sourceHeight / scale;
 
             //            if (DEBUG && DEBUG.DRAW_IMAGE) {
             //                DEBUG.checkDrawImage(texture, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
@@ -110,8 +113,8 @@ var egret;
         };
 
         HTML5CanvasRenderer.prototype.setAlpha = function (alpha, blendMode) {
-            if (alpha != this.canvasContext.globalAlpha) {
-                this.canvasContext.globalAlpha = alpha;
+            if (alpha != this.globalAlpha) {
+                this.canvasContext.globalAlpha = this.globalAlpha = alpha;
             }
             if (blendMode) {
                 this.blendValue = blendMode;
@@ -166,6 +169,15 @@ var egret;
         };
 
         HTML5CanvasRenderer.prototype.popMask = function () {
+            this.canvasContext.restore();
+            this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
+        };
+
+        HTML5CanvasRenderer.prototype.onRenderStart = function () {
+            this.canvasContext.save();
+        };
+
+        HTML5CanvasRenderer.prototype.onRenderFinish = function () {
             this.canvasContext.restore();
             this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
         };

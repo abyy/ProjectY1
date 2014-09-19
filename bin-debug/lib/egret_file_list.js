@@ -61,6 +61,7 @@ var egret_file_list = [
 "core/egret/context/devices/DeviceContext.js",
 "core/egret/context/external/ExternalInterface.js",
 "core/egret/context/Browser.js",
+"core/egret/context/localStorage/localStorage.js",
 "core/egret/utils/XML.js",
 "core/egret/utils/ByteArray.js",
 "core/egret/tween/Tween.js",

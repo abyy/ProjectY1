@@ -34,6 +34,8 @@ var egret;
         StageScaleMode.NO_SCALE = "noScale";
 
         StageScaleMode.SHOW_ALL = "showAll";
+
+        StageScaleMode.EXACT_FIT = "exactFit";
         return StageScaleMode;
     })();
     egret.StageScaleMode = StageScaleMode;
